@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>Employee Management</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <% if (view === 'index') { %>
+        <!-- Employee Records View -->
+        <h1>Employee Records</h1>
+        <a href="/employees/new">Add New Employee</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Price</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% employees.forEach(employee => { %>
+                    <tr>
+                        <td><%= employee.title %></td>
+                        <td><%= employee.description %></td>
+                        <td><img src="<%= employee.image %>" alt="Employee Image" width="50"></td>
+                        <td><%= employee.price %></td>
+                        <td><%= employee.rating %></td>
+                        <td>
+                            <a href="/employees/<%= employee._id %>/edit">Edit</a>
+                            <form action="/employees/<%= employee._id %>?_method=DELETE" method="POST" style="display:inline;">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="/employees?page=<%= i %>"><%= i %></a>
+            <% } %>
+        </div>
+    <% } else if (view === 'add') { %>
+        <!-- Add Employee View -->
+        <h1>Add New Employee</h1>
+        <form action="/employees" method="POST">
+            <input type="text" name="title" placeholder="Title" required>
+            <textarea name="description" placeholder="Description" required></textarea>
+            <input type="text" name="image" placeholder="Image URL">
+            <input type="number" name="price" placeholder="Price" required>
+            <input type="number" name="rating" placeholder="Rating" required>
+            <button type="submit">Add</button>
+          </form>
+          
+    <% } else if (view === 'edit') { %>
+        <!-- Edit Employee View -->
+        <h1>Edit Employee</h1>
+        <form action="/employees/<%= employee._id %>?_method=PUT" method="POST">
+            <input type="text" name="title" value="<%= employee.title %>" required>
+            <textarea name="description" required><%= employee.description %></textarea>
+            <input type="text" name="image" value="<%= employee.image %>">
+            <input type="number" name="price" value="<%= employee.price %>" required>
+            <input type="number" name="rating" value="<%= employee.rating %>" required>
+            <button type="submit">Update</button>
+        </form>
+    <% } %>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
